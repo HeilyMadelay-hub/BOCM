@@ -1,0 +1,48 @@
+RESUMEN: BOCM AUTOMATIZADO - PARTE 1 (DETECCIÓN)
+================================================
+
+FUNCIÓN PRINCIPAL:
+- Detector inteligente de cambios en convenios colectivos del BOCM
+- Esta parte SOLO detecta y analiza, NO inserta en base de datos
+
+PROCESO:
+1. El usuario selecciona procesar una fecha específica
+2. El sistema busca el sumario del BOCM para esa fecha:
+   - Verifica múltiples patrones de URL posibles
+   - Si es fin de semana, busca ediciones especiales
+   - Si no encuentra BOCM, lo indica claramente
+
+3. Si encuentra el sumario:
+   - Descarga temporalmente el PDF
+   - Extrae el texto completo
+   - Busca menciones de "convenio colectivo"
+   - Identifica códigos de convenio (formato: números largos como 28103551012023)
+   - Detecta el tipo de cambio (nuevo registro, modificación, etc.)
+
+4. Presenta resultados:
+   - Número de convenios detectados
+   - Detalles de cada convenio (documento, código, tipo)
+   - URLs específicas de cada convenio
+
+5. Pregunta al usuario si desea procesar los convenios encontrados
+   - En esta parte 1, el usuario siempre responde NO
+   - La inserción en base de datos ocurriría en una parte posterior
+
+FECHAS PROBADAS EN EL LOG:
+- 24/05/2025: 3 convenios detectados
+- 29/03/2025: 2 convenios detectados  
+- 01/01/2024: Sin BOCM publicado
+- 28/02/2023: 1 convenio detectado
+- 01/03/2025: 2 convenios detectados
+- 07/03/2025: 3 convenios detectados
+
+NOTA IMPORTANTE: Esta primera parte es solo de detección y análisis. 
+No realiza ninguna inserción en base de datos ni procesamiento final de los convenios.
+
+
+LO IDENTIFICAMOS PORQUE EN LA TERMINAL VEMOS:
+⬇️ Procesando convenios...
+✅ Convenios procesados (integración con BD pendiente)
+2025-05-26 16:24:52,490 - INFO - Archivo temporal eliminado: C:\Users\HEILY~1.AJI\AppData\Local\Temp\tmpmcwdedgm.pdf
+
+-> AHORA CON LOS CAMBIOS DE CODIGO DE CONVENIO DETECTADOS DESCARGAMOS EL CORRESPONDIENTE BOCM Y LO INSERTAMOS EN LA BASE DE DATOS

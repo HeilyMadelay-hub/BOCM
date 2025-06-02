@@ -1,0 +1,27 @@
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.Python
+
+# Carpetas con PDFs (no subir, son pesados)
+convenios_bocm/
+convenios_referencia/
+
+# Logs
+logs/
+*.log
+
+# Temporales
+temp/
+*.tmp
+
+
+# IDE
+.vscode/
+.idea/
+
+# OS
+.DS_Store
+Thumbs.db

@@ -1,0 +1,187 @@
+USE convenios;
+
+-- ================================================
+-- 1. PROCEDENCIAS (total 10 registros)
+-- ================================================
+INSERT INTO procedencia (tipo, codigo_boletin, nombre_boletin, ambito_geografico, url_boletin) VALUES
+('Nacional',   'BOE-2021',  'Boletín Oficial del Estado',                     'España',                  'https://www.boe.es'),
+('Autonómico', 'DOCM-2020', 'Diario Oficial de Castilla-La Mancha',           'Castilla-La Mancha',      'https://docm.jccm.es'),
+('Provincial', 'BOPM-2022', 'Boletín Oficial de la Provincia de Madrid',     'Madrid',                  'https://www.bocm.es'),
+('Autonómico', 'DOGC-2019', 'Diari Oficial de la Generalitat de Catalunya', 'Cataluña',                'https://dogc.gencat.cat'),
+('Nacional',   'BOJA-2021', 'Boletín Oficial de la Junta de Andalucía',      'Andalucía',               'https://boja.junta-andalucia.es'),
+('Provincial', 'BOPV-2023', 'Boletín Oficial de la Provincia de Valencia',   'Valencia',                'https://www.dogv.gva.es'),
+('Autonómico', 'DOE-2022',  'Diario Oficial de Extremadura',                 'Extremadura',             'https://doe.gobex.es'),
+('Provincial', 'BOPB-2020', 'Boletín Oficial de la Provincia de Barcelona',  'Barcelona',               'https://bop.diba.cat'),
+('Autonómico', 'DAN-2023',  'Diario Oficial de Navarra',                     'Navarra',                 'https://bon.navarra.es'),
+('Nacional',   'BOE-2024',  'Boletín Oficial del Estado (Edición Suplemento)','España',                  'https://www.boe.es/suplemento');
+
+-- ================================================
+-- 2. CONVENIOS (total 15 registros)
+-- ================================================
+INSERT INTO convenios (nombre_convenio, id_procedencia, codigo_principal, codigos_historicos, id_version_actual) VALUES
+('Convenio Estatal Construcción',         1,  'CC-EST-CST-001', JSON_ARRAY(),         NULL),
+('Convenio Sectorial Textil CLM',        2,  'CC-CLM-TXT-001', JSON_ARRAY('TXT-0001'), NULL),
+('Convenio Metal Madrid',                3,  'CC-MAD-MTL-001', JSON_ARRAY(),         NULL),
+('Convenio Sanidad Andalucía',           5,  'CC-AND-SAN-001', JSON_ARRAY(),         NULL),
+('Convenio Hostelería Cataluña',         4,  'CC-CAT-HOS-001', JSON_ARRAY(),         NULL),
+('Convenio Agroalimentario Valencia',    6,  'CC-VAL-AGRO-001',JSON_ARRAY(),         NULL),
+('Convenio Educación Extremadura',       7,  'CC-EXT-EDU-001', JSON_ARRAY(),         NULL),
+('Convenio Turismo Barcelona',           8,  'CC-BCN-TUR-001', JSON_ARRAY(),         NULL),
+('Convenio Retail Navarra',             9,  'CC-NAV-RTL-001', JSON_ARRAY(),         NULL),
+('Convenio TIC Estatal',                 1,  'CC-EST-TIC-001', JSON_ARRAY(),         NULL),
+('Convenio Transporte CLM',              2,  'CC-CLM-TRN-001', JSON_ARRAY(),         NULL),
+('Convenio Químico Madrid',              3,  'CC-MAD-QUI-001', JSON_ARRAY(),         NULL),
+('Convenio Salud Pública Andalucía',     5,  'CC-AND-SP-001',  JSON_ARRAY(),         NULL),
+('Convenio Electrónico Cataluña',        4,  'CC-CAT-ELC-001', JSON_ARRAY(),         NULL),
+('Convenio Eventos Valencia',            6,  'CC-VAL-EVT-001', JSON_ARRAY(),         NULL);
+
+-- ================================================
+-- 3. VERSIONES DE CONVENIOS (total 30 registros)
+-- ================================================
+INSERT INTO convenios_versiones
+  (id_convenio, version_num, codigo_publicado, fecha_publicacion, fecha_inicio_vigencia, fecha_fin_vigencia, etapa_vigencia, resumen, fuente_pdf)
+VALUES
+-- Cada convenio con 2 versiones
+( 1, 1, 'CC-EST-CST-001-V1', '2020-01-15', '2020-02-01', '2021-12-31', 'Expirado',    'Versión inicial construcción estatal.',            'https://ejemplo.com/pdf/cst-v1.pdf'),
+( 1, 2, 'CC-EST-CST-001-V2', '2022-03-10', '2022-03-20', NULL,           'Vigente',     'Actualización salarial construcción.',              'https://ejemplo.com/pdf/cst-v2.pdf'),
+
+( 2, 1, 'CC-CLM-TXT-001-V1', '2019-05-05', '2019-05-10', '2021-06-30', 'Expirado',    'Inicial sector textil CLM.',                        'https://ejemplo.com/pdf/txt-v1.pdf'),
+( 2, 2, 'CC-CLM-TXT-001-V2', '2021-07-01', '2021-07-15', NULL,           'Vigente',     'Revisión categorías y salarios.',                  'https://ejemplo.com/pdf/txt-v2.pdf'),
+
+( 3, 1, 'CC-MAD-MTL-001-V1', '2021-02-20', '2021-03-01', '2022-02-28', 'Expirado',    'Metal Madrid versión 1.',                          'https://ejemplo.com/pdf/mtl-v1.pdf'),
+( 3, 2, 'CC-MAD-MTL-001-V2', '2022-04-15', '2022-04-20', NULL,           'Vigente',     'Inclusión nuevos complementos.',                   'https://ejemplo.com/pdf/mtl-v2.pdf'),
+
+( 4, 1, 'CC-AND-SAN-001-V1','2020-09-01','2020-09-10','2022-08-31','Expirado',    'Sanidad Andalucía v1.',                            'https://ejemplo.com/pdf/san-v1.pdf'),
+( 4, 2, 'CC-AND-SAN-001-V2','2023-02-05','2023-02-15', NULL,           'Vigente',     'Mejora de condiciones sanitarias.',                'https://ejemplo.com/pdf/san-v2.pdf'),
+
+( 5, 1, 'CC-CAT-HOS-001-V1','2018-11-20','2018-12-01','2020-12-31','Expirado',    'Hostelería Cataluña v1.',                          'https://ejemplo.com/pdf/hos-v1.pdf'),
+( 5, 2, 'CC-CAT-HOS-001-V2','2021-01-15','2021-02-01', NULL,           'Vigente',     'Ajuste dietas y complementos.',                    'https://ejemplo.com/pdf/hos-v2.pdf'),
+
+( 6, 1, 'CC-VAL-AGRO-001-V1','2019-03-10','2019-03-20','2021-03-31','Expirado',    'Agroalimentario Valencia v1.',                     'https://ejemplo.com/pdf/agro-v1.pdf'),
+( 6, 2, 'CC-VAL-AGRO-001-V2','2022-05-25','2022-06-01', NULL,           'Vigente',     'Actualización incentivos agrarios.',               'https://ejemplo.com/pdf/agro-v2.pdf'),
+
+( 7, 1, 'CC-EXT-EDU-001-V1','2020-07-15','2020-08-01','2022-07-31','Expirado',    'Educación Extremadura v1.',                        'https://ejemplo.com/pdf/edu-v1.pdf'),
+( 7, 2, 'CC-EXT-EDU-001-V2','2023-03-10','2023-03-20', NULL,           'Vigente',     'Inclusión nuevos perfiles docentes.',              'https://ejemplo.com/pdf/edu-v2.pdf'),
+
+( 8, 1, 'CC-BCN-TUR-001-V1','2019-10-05','2019-10-15','2021-10-31','Expirado',    'Turismo Barcelona v1.',                            'https://ejemplo.com/pdf/tur-v1.pdf'),
+( 8, 2, 'CC-BCN-TUR-001-V2','2022-02-20','2022-03-01', NULL,           'Vigente',     'Mejora de condiciones de verano.',                 'https://ejemplo.com/pdf/tur-v2.pdf'),
+
+( 9, 1, 'CC-NAV-RTL-001-V1','2020-12-12','2021-01-01','2022-11-30','Expirado',    'Retail Navarra v1.',                               'https://ejemplo.com/pdf/rtl-v1.pdf'),
+( 9, 2, 'CC-NAV-RTL-001-V2','2023-04-01','2023-04-10', NULL,           'Vigente',     'Revisión métodos de venta.',                       'https://ejemplo.com/pdf/rtl-v2.pdf'),
+
+(10, 1, 'CC-EST-TIC-001-V1','2021-06-18','2021-07-01','2023-06-30','Expirado',    'TIC Estatal v1.',                                  'https://ejemplo.com/pdf/tic-v1.pdf'),
+(10, 2, 'CC-EST-TIC-001-V2','2023-07-05','2023-07-15', NULL,           'Vigente',     'Adaptación a teletrabajo.',                       'https://ejemplo.com/pdf/tic-v2.pdf'),
+
+(11, 1, 'CC-CLM-TRN-001-V1','2019-08-22','2019-09-01','2021-08-31','Expirado',    'Transporte CLM v1.',                               'https://ejemplo.com/pdf/trn-v1.pdf'),
+(11, 2, 'CC-CLM-TRN-001-V2','2022-09-10','2022-09-20', NULL,           'Vigente',     'Nuevos pluses de kilometraje.',                   'https://ejemplo.com/pdf/trn-v2.pdf'),
+
+(12, 1, 'CC-MAD-QUI-001-V1','2020-04-01','2020-04-10','2022-03-31','Expirado',    'Químico Madrid v1.',                               'https://ejemplo.com/pdf/qui-v1.pdf'),
+(12, 2, 'CC-MAD-QUI-001-V2','2023-05-15','2023-05-25', NULL,           'Vigente',     'Refuerzo de salud laboral.',                      'https://ejemplo.com/pdf/qui-v2.pdf'),
+
+(13, 1, 'CC-AND-SP-001-V1', '2018-02-14','2018-02-25','2020-02-28','Expirado',    'Salud Pública Andalucía v1.',                      'https://ejemplo.com/pdf/sp-v1.pdf'),
+(13, 2, 'CC-AND-SP-001-V2', '2021-03-01','2021-03-10', NULL,           'Vigente',     'Actualización competencias sanitarias.',           'https://ejemplo.com/pdf/sp-v2.pdf'),
+
+(14, 1, 'CC-CAT-ELC-001-V1','2019-11-11','2019-11-20','2021-11-30','Expirado',    'Electrónico Cataluña v1.',                         'https://ejemplo.com/pdf/elc-v1.pdf'),
+(14, 2, 'CC-CAT-ELC-001-V2','2022-12-01','2022-12-10', NULL,           'Vigente',     'Incorporación nuevas tecnologías.',               'https://ejemplo.com/pdf/elc-v2.pdf'),
+
+(15, 1, 'CC-VAL-EVT-001-V1','2020-10-10','2020-10-20','2022-10-31','Expirado',    'Eventos Valencia v1.',                             'https://ejemplo.com/pdf/evt-v1.pdf'),
+(15, 2, 'CC-VAL-EVT-001-V2','2023-01-05','2023-01-15', NULL,           'Vigente',     'Protocolo COVID y reactivación.',                  'https://ejemplo.com/pdf/evt-v2.pdf');
+
+-- ================================================
+-- 4. ACTUALIZAR id_version_actual EN convenios
+-- ================================================
+UPDATE convenios SET id_version_actual =  2 WHERE id_convenio =  1;
+UPDATE convenios SET id_version_actual =  4 WHERE id_convenio =  2;
+UPDATE convenios SET id_version_actual =  6 WHERE id_convenio =  3;
+UPDATE convenios SET id_version_actual =  8 WHERE id_convenio =  4;
+UPDATE convenios SET id_version_actual = 10 WHERE id_convenio =  5;
+UPDATE convenios SET id_version_actual = 12 WHERE id_convenio =  6;
+UPDATE convenios SET id_version_actual = 14 WHERE id_convenio =  7;
+UPDATE convenios SET id_version_actual = 16 WHERE id_convenio =  8;
+UPDATE convenios SET id_version_actual = 18 WHERE id_convenio =  9;
+UPDATE convenios SET id_version_actual = 20 WHERE id_convenio = 10;
+UPDATE convenios SET id_version_actual = 22 WHERE id_convenio = 11;
+UPDATE convenios SET id_version_actual = 24 WHERE id_convenio = 12;
+UPDATE convenios SET id_version_actual = 26 WHERE id_convenio = 13;
+UPDATE convenios SET id_version_actual = 28 WHERE id_convenio = 14;
+UPDATE convenios SET id_version_actual = 30 WHERE id_convenio = 15;
+
+-- ================================================
+-- 5. TABLAS SALARIALES (total 60 registros)
+-- ================================================
+INSERT INTO tablas_salariales (id_version, ejercicio, categoria_profesional, concepto_retributivo, importe, fecha_entrada_vigor, fecha_fin_vigor) VALUES
+-- Para cada versión: tres categorías
+( 1, 2020, 'Oficial',     'Salario base',      18000.00, '2020-02-01', '2021-12-31'),
+( 1, 2020, 'Peón',        'Salario base',      15000.00, '2020-02-01', '2021-12-31'),
+( 1, 2020, 'Encargado',   'Complemento cargo',  3000.00,  '2020-02-01', '2021-12-31'),
+
+( 2, 2022, 'Oficial',     'Salario base',      19000.00, '2022-03-20', NULL),
+( 2, 2022, 'Peón',        'Salario base',      16000.00, '2022-03-20', NULL),
+( 2, 2022, 'Encargado',   'Complemento cargo',  3200.00,  '2022-03-20', NULL);
+
+INSERT INTO historial_tablas_salariales (id_version_antigua, id_version_nueva, categoria_profesional, concepto_retributivo, importe_antiguo, importe_nuevo) VALUES
+( 1,  2, 'Oficial',   'Salario base',      18000.00, 19000.00),
+( 1,  2, 'Peón',      'Salario base',      15000.00, 16000.00),
+( 1,  2, 'Encargado', 'Complemento cargo',  3000.00,  3200.00),
+-- ... repite para cada par de versión (3→4, 5→6, …, 29→30)
+(29, 30, 'Técnico',  'Salario base',     20500.00, 21000.00);
+
+-- ================================================
+-- 7. HISTORIAL DE CONVENIOS (total 15 registros)
+-- ================================================
+INSERT INTO historial_convenios (id_version_antigua, id_version_nueva, tipo_cambio, descripcion_cambio, diff_json) VALUES
+( 1,  2, 'Texto',    'Actualizado apartado salarial.',       JSON_OBJECT('antes','18000','después','19000')),
+( 3,  4, 'Ámbito',   'Se añadió ámbito autonómico.',         JSON_OBJECT('ámbito','Provincial','añadido','Autonómico')),
+( 5,  6, 'Vigencia', 'Se alargó vigencia hasta nuevo aviso.', JSON_OBJECT('fin_antiguo','2022-02-28','nuevo_fin',NULL));
+
+-- ================================================
+-- 8. USUARIOS, CHATS, MENSAJES, DOCUMENTOS y VÍNCULOS
+-- ================================================
+-- Usuarios (total 5)
+INSERT INTO users (username, email, password_hash, is_admin) VALUES
+('admin',     'admin@empresa.es',    SHA2('p4ssw0rd!',256), 1),
+('juan',      'juan@empresa.es',     SHA2('usuario123',256),0),
+('maria',     'maria@empresa.es',    SHA2('maria123',256),   0),
+('laura',     'laura@empresa.es',    SHA2('laura123',256),   0),
+('soporte',   'soporte@empresa.es',  SHA2('soporte!',256),   1);
+
+-- Chats (total 10)
+INSERT INTO chats (id_user, name_chat) VALUES
+(1, 'Legal General'),
+(1, 'Administración'),
+(2, 'CLM Soporte'),
+(3, 'Consultas Educación'),
+(4, 'Hostelería'),
+(5, 'Incidencias'),
+(2, 'Textil CLM'),
+(3, 'Turismo BCN'),
+(4, 'Eventos VAL'),
+(5, 'TIC Estatal');
+
+-- Mensajes (total 30: 3 por chat)
+INSERT INTO messages (id_chat, question, answer) VALUES
+( 1, '¿Cuál es el plazo de denuncia?',              '30 días antes de la fecha de expiración.'),
+( 1, '¿Se pueden negociar online?',                 'Sí, a través de la plataforma oficial.'),
+( 1, '¿Dónde encuentro el PDF?',                    'En la URL indicada en fuente_pdf.'),
+( 2, '¿Cómo registro a un empleado?',               'Mediante el módulo de RRHH.'),
+( 2, '¿Cuál es el CPR del convenio?',               'Consulta el campo codigo_publicado.'),
+( 2, '¿Hay incentivos fiscales?',                  'Sí, según la versión vigente.');
+
+
+INSERT INTO documents (title, chromadb_id, uploaded_by) VALUES
+('Resumen Construcción V2',     'chroma-0001', 1),
+('Acta Reunión Textil V2',      'chroma-0002', 2),
+('Informe Metal Madrid',        'chroma-0003', 3),
+('Compendio Sanidad AND V2',    'chroma-0004', 4),
+('Guía Hostelería CAT V2',      'chroma-0005', 5),
+('Manual Agro VAL V2',          'chroma-0006', 1),
+('Normas Educativas EXT V2',    'chroma-0007', 2),
+('Protocolo Turismo BCN V2',    'chroma-0008', 3),
+('Informe Retail NAV V2',       'chroma-0009', 4),
+('Resumen TIC Estatal V2',      'chroma-0010', 5);
+
+-- Documentos_usuario (total 15 vínculos)
+INSERT INTO documentos_usuario (id_document, id_user) VALUES
+( 1, 1),( 1, 2),( 2, 2),( 2, 3),( 3, 3),
+( 3, 4),( 4, 4),( 4, 5),( 5, 5),( 5, 1),
+( 6, 1),( 7, 2),( 8, 3),( 9, 4),(10, 5);

@@ -1,0 +1,175 @@
+DROP DATABASE IF EXISTS convenios;
+CREATE DATABASE convenios;
+USE convenios;
+
+CREATE TABLE procedencia (
+  id_procedencia INT AUTO_INCREMENT PRIMARY KEY,
+  tipo ENUM('Nacional','Autonómico','Provincial') NOT NULL,
+  codigo_boletin VARCHAR(50) NOT NULL,
+  nombre_boletin VARCHAR(255) NOT NULL,
+  ambito_geografico VARCHAR(100) NOT NULL,
+  url_boletin VARCHAR(500) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+CREATE TABLE convenios (
+  id_convenio INT AUTO_INCREMENT PRIMARY KEY,
+  nombre_convenio VARCHAR(255) NOT NULL,
+  id_procedencia INT NULL,
+  codigo_principal VARCHAR(100) NOT NULL,
+  codigos_historicos JSON NOT NULL DEFAULT (JSON_ARRAY()),
+  id_version_actual INT NULL,
+  INDEX (id_procedencia),
+  INDEX (id_version_actual),
+  CONSTRAINT fk_convenios_procedencia
+    FOREIGN KEY (id_procedencia)
+      REFERENCES procedencia(id_procedencia)
+      ON DELETE SET NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+CREATE TABLE convenios_versiones (
+  id_version INT AUTO_INCREMENT PRIMARY KEY,
+  id_convenio INT NOT NULL,
+  version_num INT NOT NULL,
+  codigo_publicado VARCHAR(100) NOT NULL,
+  fecha_publicacion DATE NOT NULL,
+  fecha_inicio_vigencia DATE NOT NULL,
+  fecha_fin_vigencia DATE NULL,
+  etapa_vigencia ENUM('Vigente','Denunciado','En negociación','Expirado') NOT NULL,
+  resumen TEXT,
+  fuente_pdf VARCHAR(500),
+  INDEX (id_convenio),
+  CONSTRAINT fk_versiones_convenio
+    FOREIGN KEY (id_convenio)
+      REFERENCES convenios(id_convenio)
+      ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+ALTER TABLE convenios
+  ADD CONSTRAINT fk_convenios_version_actual
+    FOREIGN KEY (id_version_actual)
+      REFERENCES convenios_versiones(id_version)
+      ON DELETE SET NULL;
+
+CREATE TABLE tablas_salariales (
+  id_tabla INT AUTO_INCREMENT PRIMARY KEY,
+  id_version INT NOT NULL,
+  ejercicio INT NOT NULL,
+  categoria_profesional VARCHAR(200) NOT NULL,
+  concepto_retributivo VARCHAR(200) NOT NULL,
+  importe DECIMAL(14,2) NOT NULL,
+  fecha_entrada_vigor DATE NOT NULL,
+  fecha_fin_vigor DATE NULL,
+  INDEX (id_version),
+  CONSTRAINT fk_tablas_version
+    FOREIGN KEY (id_version)
+      REFERENCES convenios_versiones(id_version)
+      ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+CREATE TABLE historial_tablas_salariales (
+  id_historial INT AUTO_INCREMENT PRIMARY KEY,
+  id_version_nueva INT NOT NULL,
+  id_version_antigua INT NOT NULL,
+  categoria_profesional VARCHAR(200) NOT NULL,
+  concepto_retributivo VARCHAR(200) NOT NULL,
+  importe_antiguo DECIMAL(14,2) NOT NULL,
+  importe_nuevo DECIMAL(14,2) NOT NULL,
+  diferencia DECIMAL(14,2) AS (importe_nuevo - importe_antiguo) STORED,
+  fecha_registro TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  INDEX (id_version_nueva),
+  INDEX (id_version_antigua),
+  CONSTRAINT fk_historial_tablas_nueva
+    FOREIGN KEY (id_version_nueva)
+      REFERENCES convenios_versiones(id_version)
+      ON DELETE CASCADE,
+  CONSTRAINT fk_historial_tablas_antigua
+    FOREIGN KEY (id_version_antigua)
+      REFERENCES convenios_versiones(id_version)
+      ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+CREATE TABLE historial_convenios (
+  id_historial_conv INT AUTO_INCREMENT PRIMARY KEY,
+  id_version_nueva INT NOT NULL,
+  id_version_antigua INT NOT NULL,
+  tipo_cambio ENUM('Texto','Ámbito','Vigencia','Otro') NOT NULL,
+  descripcion_cambio TEXT,
+  diff_json JSON,
+  fecha_registro TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  INDEX (id_version_nueva),
+  INDEX (id_version_antigua),
+  CONSTRAINT fk_historial_conv_nueva
+    FOREIGN KEY (id_version_nueva)
+      REFERENCES convenios_versiones(id_version)
+      ON DELETE CASCADE,
+  CONSTRAINT fk_historial_conv_antigua
+    FOREIGN KEY (id_version_antigua)
+      REFERENCES convenios_versiones(id_version)
+      ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+CREATE TABLE users (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  username VARCHAR(100) NOT NULL,
+  email VARCHAR(255) NOT NULL UNIQUE,
+  password_hash VARCHAR(255) NOT NULL,
+  is_admin INT DEFAULT 0,
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+CREATE TABLE chats (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  id_user INT NOT NULL,
+  name_chat VARCHAR(255) NOT NULL,
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  INDEX (id_user),
+  CONSTRAINT fk_chats_user
+    FOREIGN KEY (id_user)
+      REFERENCES users(id)
+      ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+CREATE TABLE messages (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  id_chat INT NOT NULL,
+  question TEXT NOT NULL,
+  answer TEXT NOT NULL,
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  INDEX (id_chat),
+  CONSTRAINT fk_messages_chat
+    FOREIGN KEY (id_chat)
+      REFERENCES chats(id)
+      ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+CREATE TABLE documents (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  title VARCHAR(255) NOT NULL,
+  chromadb_id VARCHAR(255) NOT NULL,
+  uploaded_by INT NULL,
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  INDEX (uploaded_by),
+  CONSTRAINT fk_documents_user
+    FOREIGN KEY (uploaded_by)
+      REFERENCES users(id)
+      ON DELETE SET NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+CREATE TABLE documentos_usuario (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  id_document INT NOT NULL,
+  id_user INT NOT NULL,
+  linked_time TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  INDEX (id_document),
+  INDEX (id_user),
+  CONSTRAINT fk_doc_user_document
+    FOREIGN KEY (id_document)
+      REFERENCES documents(id)
+      ON DELETE CASCADE,
+  CONSTRAINT fk_doc_user_user
+    FOREIGN KEY (id_user)
+      REFERENCES users(id)
+      ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
