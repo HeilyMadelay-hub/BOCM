@@ -216,4 +216,3 @@ MIT License - ver archivo [LICENSE](LICENSE)
 ## 🙏 Agradecimientos
 
 - Comunidad de Madrid por los datos abiertos
-- Equipo de desarrollo
